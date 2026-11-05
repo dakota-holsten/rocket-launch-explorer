@@ -5,6 +5,20 @@
 // Space Devs development endpoint: no rate limits, but the data is stale and limited.
 const BASE_URL = "https://lldev.thespacedevs.com/2.3.0";
 
+const statusMessage = document.getElementById("status");
+
+function showLoading() {
+  statusMessage.textContent = "Loading...";
+}
+
+function clearStatus() {
+  statusMessage.textContent = "";
+}
+
+function showError(error) {
+  statusMessage.textContent = "Something went wrong: " + error.message;
+}
+
 // ---------------------------------------------------------------
 // PART 1: XMLHttpRequest and callbacks
 // ---------------------------------------------------------------
@@ -14,13 +28,16 @@ const BASE_URL = "https://lldev.thespacedevs.com/2.3.0";
 // - Parses the response
 // - Calls the callback function and passes the results array
 function getUpcomingLaunches() {
+  showLoading();
+
   axios
     .get(BASE_URL + "/launches/upcoming/")
     .then(function (response) {
+      clearStatus();
       populateDropdown(response.data.results);
     })
     .catch(function (error) {
-      console.log(error.message); // temporary, replaced in Step 7
+      showError(error);
     });
 }
 
@@ -50,13 +67,16 @@ document.getElementById("launchDropdown").addEventListener("change", function ()
 // - Makes a GET request to BASE_URL + "/launches/" + launchId + "/"
 // - Parses the response and passes the launch object to the callback
 function getLaunchDetails(launchId) {
+  showLoading();
+
   axios
     .get(BASE_URL + "/launches/" + launchId + "/")
     .then(function (response) {
+      clearStatus();
       displayLaunchInfo(response.data);
     })
     .catch(function (error) {
-      console.log(error.message); // temporary, replaced in Step 7
+      showError(error);
     });
 }
 
