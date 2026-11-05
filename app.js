@@ -13,18 +13,15 @@ const BASE_URL = "https://lldev.thespacedevs.com/2.3.0";
 // - Makes a GET request to BASE_URL + "/launches/upcoming/"
 // - Parses the response
 // - Calls the callback function and passes the results array
-function getUpcomingLaunches(callback) {
-  const xhr = new XMLHttpRequest();
-  xhr.open("GET", BASE_URL + "/launches/upcoming/");
-
-  xhr.onreadystatechange = function () {
-    if (xhr.readyState === 4 && xhr.status === 200) {
-      const data = JSON.parse(xhr.responseText);
-      callback(data.results);
-    }
-  };
-
-  xhr.send();
+function getUpcomingLaunches() {
+  axios
+    .get(BASE_URL + "/launches/upcoming/")
+    .then(function (response) {
+      populateDropdown(response.data.results);
+    })
+    .catch(function (error) {
+      console.log(error.message); // temporary, replaced in Step 7
+    });
 }
 
 // Step 2: Create populateDropdown(launches)
@@ -46,24 +43,21 @@ function populateDropdown(launches) {
 // - Call getLaunchDetails(launchId, callback)
 document.getElementById("launchDropdown").addEventListener("change", function () {
   const launchId = this.value;
-  getLaunchDetails(launchId, displayLaunchInfo);
+  getLaunchDetails(launchId);
 });
 
 // Step 4: Create getLaunchDetails(launchId, callback)
 // - Makes a GET request to BASE_URL + "/launches/" + launchId + "/"
 // - Parses the response and passes the launch object to the callback
-function getLaunchDetails(launchId, callback) {
-  const xhr = new XMLHttpRequest();
-  xhr.open("GET", BASE_URL + "/launches/" + launchId + "/");
-
-  xhr.onreadystatechange = function () {
-    if (xhr.readyState === 4 && xhr.status === 200) {
-      const launch = JSON.parse(xhr.responseText);
-      callback(launch);
-    }
-  };
-
-  xhr.send();
+function getLaunchDetails(launchId) {
+  axios
+    .get(BASE_URL + "/launches/" + launchId + "/")
+    .then(function (response) {
+      displayLaunchInfo(response.data);
+    })
+    .catch(function (error) {
+      console.log(error.message); // temporary, replaced in Step 7
+    });
 }
 
 // Step 5: Create displayLaunchInfo(launch)
@@ -103,7 +97,7 @@ function displayLaunchInfo(launch) {
 }
 
 // Final step: kick off the flow
-getUpcomingLaunches(populateDropdown);
+getUpcomingLaunches();
 
 // ---------------------------------------------------------------
 // PART 2: Axios and promises (refactor after Part 1 is committed)
