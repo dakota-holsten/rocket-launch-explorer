@@ -45,15 +45,25 @@ function populateDropdown(launches) {
 // - On change, get the selected launch ID
 // - Call getLaunchDetails(launchId, callback)
 document.getElementById("launchDropdown").addEventListener("change", function () {
-  // TODO: Get selected launchId
-  // TODO: Call getLaunchDetails
+  const launchId = this.value;
+  getLaunchDetails(launchId, displayLaunchInfo);
 });
 
 // Step 4: Create getLaunchDetails(launchId, callback)
 // - Makes a GET request to BASE_URL + "/launches/" + launchId + "/"
 // - Parses the response and passes the launch object to the callback
 function getLaunchDetails(launchId, callback) {
-  // TODO: Implement XHR GET request for a single launch
+  const xhr = new XMLHttpRequest();
+  xhr.open("GET", BASE_URL + "/launches/" + launchId + "/");
+
+  xhr.onreadystatechange = function () {
+    if (xhr.readyState === 4 && xhr.status === 200) {
+      const launch = JSON.parse(xhr.responseText);
+      callback(launch);
+    }
+  };
+
+  xhr.send();
 }
 
 // Step 5: Create displayLaunchInfo(launch)
@@ -61,6 +71,7 @@ function getLaunchDetails(launchId, callback) {
 // - Creates an image of the rocket (launch.rocket.configuration.image.image_url) and appends it to #rocket
 // - If no image is available, displays a message instead
 function displayLaunchInfo(launch) {
+  console.log(launch); // temporary, remove in Step 5
   // TODO: Display mission name and description
   // TODO: Display the rocket image
 }
